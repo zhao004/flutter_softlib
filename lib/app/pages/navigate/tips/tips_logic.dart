@@ -1,18 +1,32 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_softlib/app/utils/toast_util.dart';
 import 'package:get/get.dart';
 
+import '../../../config.dart';
+import '../../../http/http_api.dart';
+import '../../../models/http/results/report_cat_model.dart';
+
 class TipsLogic extends GetxController {
-  List<Widget> tabs = [Tab(text: '现金活动'), Tab(text: '话费活动'), Tab(text: '流量活动')];
+  HttpApi httpApi = Get.find<HttpApi>();
+  List<ReportCatData>? reportCatList;
 
   @override
   void onReady() {
     // TODO: implement onReady
     super.onReady();
+    getTipsCategory();
   }
 
-  @override
-  void onClose() {
-    // TODO: implement onClose
-    super.onClose();
+  ///获取线报分类
+  Future<void> getTipsCategory() async {
+    try {
+      ReportCatModel reportCat = await httpApi.getReportCat();
+      if (reportCat.code == 1) {
+        reportCatList = reportCat.data;
+      }
+      update(['reportCatList']);
+    } catch (e) {
+      logger.e(e.toString());
+      ToastUtil.error(e.toString());
+    }
   }
 }

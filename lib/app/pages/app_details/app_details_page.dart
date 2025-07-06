@@ -1,6 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_softlib/generated/assets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
+import '../../config.dart';
+import '../../models/http/results/lzy_file_info_model.dart';
+import '../../utils/jump_util.dart';
 import 'app_details_logic.dart';
 
 class AppDetailsPage extends StatefulWidget {
@@ -20,39 +27,69 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
         title: Text('软件详情'),
         actionsPadding: EdgeInsets.only(right: 5),
         actions: [
-          //分享
-          IconButton(icon: Icon(Icons.share), onPressed: () {}),
+          //浏览器图标
+          IconButton(
+            icon: Icon(FontAwesomeIcons.chrome),
+            onPressed: () => JumpUtil.openUrl(logic.dowUrl ?? ''),
+          ),
+          GetBuilder<AppDetailsLogic>(
+            id: 'share',
+            builder: (logic) {
+              LzyFileInfoData? appInfo = logic.appInfo;
+              if (appInfo == null) {
+                return SizedBox.shrink();
+              }
+              return IconButton(
+                icon: Icon(Icons.share),
+                onPressed: () => logic.showSharePopUps(context),
+              );
+            },
+          ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // 软件头部
-            _buildAppHeader(),
-            // 软件详情
-            _buildAppDetails(),
-            // 软件示例图
-            _buildAppScreenshots(),
-          ],
-        ),
+      body: GetBuilder<AppDetailsLogic>(
+        id: 'appInfo',
+        builder: (logic) {
+          LzyFileInfoData? appInfo = logic.appInfo;
+          if (logic.msgError != null && logic.msgError!.isNotEmpty) {
+            return Center(
+              child: Text(
+                logic.msgError!,
+                style: TextStyle(color: Colors.red, fontSize: 16),
+              ),
+            );
+          }
+          if (appInfo == null) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                // 软件头部
+                _buildAppHeader(appInfo),
+                // 软件详情
+                _buildAppDetails(appInfo),
+                // 软件示例图
+                _buildAppScreenshots(appInfo),
+              ],
+            ),
+          );
+        },
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(26),
-        child: FilledButton(onPressed: () {}, child: Text('下载软件')),
-      ),
+      bottomNavigationBar: buildBottom(context),
     );
   }
 
   /// 构建软件头部
-  Widget _buildAppHeader() {
+  Widget _buildAppHeader(LzyFileInfoData appInfo) {
     return Container(
-      // decoration: BoxDecoration(
-      //   border: Border.all(
-      //     color: Get.theme.primaryColor.withValues(alpha: 0.6),
-      //     width: 1,
-      //   ),
-      //   borderRadius: BorderRadius.circular(18),
-      // ),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Get.theme.primaryColor.withValues(alpha: 0.6),
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(18),
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       margin: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       child: ListTile(
@@ -61,20 +98,26 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            'https://api.krrz.cn/uploads/20250626/6b373cd3d096bd5711eda16ba8c817f3.jpg',
+          child: CachedNetworkImage(
+            imageUrl: appInfo.fileIcon ?? '',
             width: 60,
             height: 60,
-            fit: BoxFit.cover,
+            fit: BoxFit.contain,
+            placeholder: (context, url) => appIcon(60, 60),
+            errorWidget: (context, url, error) => appIcon(60, 60),
           ),
         ),
         title: Text(
-          '软件标题',
+          appInfo.fileName ?? '未知软件',
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.symmetric(vertical: 6),
-          child: Row(
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 5,
             children: [
               Container(
                 padding: EdgeInsets.symmetric(vertical: 2, horizontal: 6),
@@ -83,11 +126,22 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  '50M',
+                  appInfo.fileSize ?? '未知大小',
                   style: TextStyle(color: Colors.white, fontSize: 13),
                 ),
               ),
-              SizedBox(width: 8),
+              if (appInfo.fileTime != null && appInfo.fileTime!.isNotEmpty)
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+                  decoration: BoxDecoration(
+                    color: Get.theme.primaryColor.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    appInfo.fileTime ?? '未知时间',
+                    style: TextStyle(color: Colors.white, fontSize: 13),
+                  ),
+                ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 2, horizontal: 6),
                 decoration: BoxDecoration(
@@ -95,7 +149,7 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  '昨天:21:00',
+                  appInfo.fileType ?? '未知类型',
                   style: TextStyle(color: Colors.white, fontSize: 13),
                 ),
               ),
@@ -107,7 +161,11 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
   }
 
   /// 构建软件详情
-  Widget _buildAppDetails() {
+  Widget _buildAppDetails(LzyFileInfoData appInfo) {
+    String? fileDesc = appInfo.fileDesc;
+    if (fileDesc == null || fileDesc.isEmpty) {
+      return SizedBox.shrink();
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       child: ListTile(
@@ -117,7 +175,7 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
         subtitle: Padding(
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: Text(
-            '这是一个示例软件的详细介绍。它提供了丰富的功能和良好的用户体验。',
+            appInfo.fileDesc ?? '',
             style: TextStyle(color: Colors.grey[800]),
           ),
         ),
@@ -126,24 +184,290 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
   }
 
   /// 构建软件示例图
-  Widget _buildAppScreenshots() {
+  Widget _buildAppScreenshots(LzyFileInfoData appInfo) {
+    String? fileImage = appInfo.fileImage;
+    if (fileImage == null || fileImage.isEmpty) {
+      return SizedBox.shrink();
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       child: ListTile(
         contentPadding: EdgeInsets.all(0),
         title: Text('软件截图', style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Card(
-          margin: EdgeInsets.symmetric(vertical: 12),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              'https://api.krrz.cn/uploads/20250626/6b373cd3d096bd5711eda16ba8c817f3.jpg',
-              // fit: BoxFit.cover,
+        subtitle: GestureDetector(
+          onTap: () => logic.showPreviewImage(appInfo.fileImage ?? ''),
+          child: Card(
+            margin: EdgeInsets.symmetric(vertical: 12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SizedBox(
+                height: Get.height * 0.3,
+                child: CachedNetworkImage(
+                  imageUrl: fileImage,
+                  fit: BoxFit.contain,
+                  placeholder:
+                      (context, url) =>
+                          Image.asset(Assets.imagesSucceed, fit: BoxFit.cover),
+                  errorWidget:
+                      (context, url, error) =>
+                          Image.asset(Assets.imagesSucceed, fit: BoxFit.cover),
+                ),
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  /// 构建底部下载按钮
+  Widget buildBottom(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(1),
+            offset: const Offset(0, -1),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: GetBuilder<AppDetailsLogic>(
+          id: 'download',
+          builder: (download) {
+            DownloadTask? downloadTask = download.downloadTask;
+            // 没有下载任务
+            if (downloadTask == null) {
+              return _buildDownloadButton(download);
+            }
+            // 下载完成
+            if (downloadTask.status == DownloadTaskStatus.complete) {
+              return _buildInstallButton(download);
+            }
+            // 下载中状态
+            return _buildDownloadingProgress(context, downloadTask, download);
+          },
+        ),
+      ),
+    );
+  }
+
+  /// 构建下载按钮
+  Widget _buildDownloadButton(AppDetailsLogic download) {
+    return SizedBox(
+      height: 50,
+      child: FilledButton(
+        onPressed:
+            () => download.addDownload(
+              logic.appInfo?.fileName ?? '未知文件名',
+              logic.dowUrl,
+            ),
+        child: const Text(
+          '下载软件',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  /// 构建安装按钮
+  Widget _buildInstallButton(AppDetailsLogic download) {
+    return SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: FilledButton(
+        onPressed: () => download.openDownloadFile(),
+        style: FilledButton.styleFrom(backgroundColor: Colors.green),
+        child: const Text(
+          '安装软件',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  /// 构建下载进度UI
+  Widget _buildDownloadingProgress(
+    BuildContext context,
+    DownloadTask downloadTask,
+    AppDetailsLogic download,
+  ) {
+    return Column(
+      spacing: 12,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 进度条
+        Row(
+          spacing: 12,
+          children: [
+            Expanded(
+              child: LinearProgressIndicator(
+                value: downloadTask.progress / 100,
+                backgroundColor: Colors.grey.shade300,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  _getStatusColor(downloadTask.status),
+                ),
+                minHeight: 6,
+              ),
+            ),
+            Text(
+              '${downloadTask.progress}%',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
+              ),
+            ),
+          ],
+        ),
+        // 状态信息和操作按钮
+        Row(
+          children: [
+            // 状态信息
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _getStatusText(downloadTask.status),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: _getStatusColor(downloadTask.status),
+                    ),
+                  ),
+                  Text(
+                    '${calculateDownloadedSize(logic.appSize, downloadTask.progress)} / ${logic.appSize}',
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+            ),
+            // 操作按钮
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildActionButton(downloadTask, download),
+                const SizedBox(width: 8),
+                _buildCancelButton(download),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// 构建操作按钮
+  Widget _buildActionButton(
+    DownloadTask downloadTask,
+    AppDetailsLogic download,
+  ) {
+    switch (downloadTask.status) {
+      case DownloadTaskStatus.enqueued:
+        return Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(Icons.hourglass_empty, size: 20),
+        );
+      case DownloadTaskStatus.running:
+        return InkWell(
+          onTap: () => download.pauseDownload(),
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.pause, size: 20),
+          ),
+        );
+      case DownloadTaskStatus.paused:
+        return InkWell(
+          onTap: () => download.resumeDownload(),
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.play_arrow, size: 20),
+          ),
+        );
+      case DownloadTaskStatus.failed:
+        return InkWell(
+          onTap: () => download.retryDownload(),
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.refresh, size: 20),
+          ),
+        );
+      default:
+        return const SizedBox();
+    }
+  }
+
+  /// 构建取消按钮
+  Widget _buildCancelButton(AppDetailsLogic download) {
+    return InkWell(
+      onTap: () => download.cancelDownload(),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Icon(Icons.close, size: 20),
+      ),
+    );
+  }
+
+  /// 获取状态文本
+  String _getStatusText(DownloadTaskStatus status) {
+    switch (status) {
+      case DownloadTaskStatus.enqueued:
+        return '等待下载';
+      case DownloadTaskStatus.running:
+        return '正在下载';
+      case DownloadTaskStatus.paused:
+        return '已暂停';
+      case DownloadTaskStatus.failed:
+        return '下载失败';
+      default:
+        return '未知状态';
+    }
+  }
+
+  /// 获取状态颜色
+  Color _getStatusColor(DownloadTaskStatus? status) {
+    switch (status) {
+      case DownloadTaskStatus.enqueued:
+        return Colors.grey;
+      case DownloadTaskStatus.running:
+        return Theme.of(context).primaryColor;
+      case DownloadTaskStatus.paused:
+        return Colors.orange;
+      case DownloadTaskStatus.failed:
+        return Colors.red;
+      case DownloadTaskStatus.complete:
+        return Theme.of(context).primaryColor;
+      default:
+        return Colors.grey;
+    }
   }
 
   @override

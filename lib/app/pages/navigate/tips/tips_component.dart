@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_softlib/app/widgets/report_list/report_list_logic.dart';
+import 'package:flutter_softlib/app/widgets/report_list/report_list_widget.dart';
 import 'package:get/get.dart';
 
+import '../../../models/http/results/report_cat_model.dart';
 import 'tips_logic.dart';
 
 class TipsComponent extends StatefulWidget {
@@ -15,86 +18,46 @@ class _TipsComponentState extends State<TipsComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: logic.tabs.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('线报'),
-          bottom: TabBar(
-            tabs: logic.tabs,
-            isScrollable: true,
-            tabAlignment: TabAlignment.start,
-            overlayColor: WidgetStateColor.transparent,
-          ),
-        ),
-        body: TabBarView(
-          children:
-              logic.tabs.map((tab) {
-                return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return _buildItem();
-                    },
-                  ),
-                );
-              }).toList(),
-        ),
-      ),
-    );
-  }
-
-  /// 构建子组件
-  Widget _buildItem() {
-    return ListTile(
-      visualDensity: VisualDensity(vertical: 3),
-      leading: Image.network(
-        'https://cdn.pixabay.com/photo/2013/12/14/07/29/lid-228366_1280.jpg',
-        width: 120,
-        fit: BoxFit.cover,
-      ),
-      title: Text(
-        '这是一个标题这是一个标题这是一个标题这是一个标题这是一个标题这是一个标题',
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-      subtitle: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-        child: Row(
-          spacing: 10,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              spacing: 3,
-              children: [
-                Icon(
-                  Icons.remove_red_eye,
-                  size: 16,
-                  color: Colors.black.withAlpha(100),
-                ),
-                Text(
-                  '1000',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.black.withAlpha(130),
-                  ),
-                ),
-              ],
-            ),
-            //发布时间
-            Text(
-              '2023-10-01',
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.black.withAlpha(130),
+    return GetBuilder<TipsLogic>(
+      id: 'reportCatList',
+      builder: (logic) {
+        List<ReportCatData>? reportCats = logic.reportCatList;
+        if (reportCats == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (reportCats.isEmpty) {
+          return const Center(child: Text('暂无数据'));
+        }
+        return DefaultTabController(
+          length: reportCats.length,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text('线报'),
+              bottom: TabBar(
+                tabs:
+                    reportCats
+                        .map(
+                          (reportCat) => Tab(text: reportCat.title ?? '未知标题'),
+                        )
+                        .toList(),
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                overlayColor: WidgetStateColor.transparent,
               ),
             ),
-          ],
-        ),
-      ),
+            body: TabBarView(
+              children:
+                  reportCats.map((reportCat) {
+                    Get.lazyPut(
+                      () => ReportListLogic(reportCat.id),
+                      tag: reportCat.id.toString(),
+                    );
+                    return ReportListWidget(id: reportCat.id);
+                  }).toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 }

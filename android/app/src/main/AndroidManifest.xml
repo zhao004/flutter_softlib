@@ -1,9 +1,62 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Android 13+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+
+    <!-- Android 12 及以下兼容 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
+
+    <!--打开安装apk-->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
+    <!--通知权限-->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <application
             android:label="软件库App"
             android:name="${applicationName}"
+            android:requestLegacyExternalStorage="true"
+            android:enableOnBackInvokedCallback="true"
             android:icon="@mipmap/ic_launcher">
+
+        <!-- ✅ 这里插入 flutter_downloader 的 Provider 配置 -->
+        <provider
+                android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
+                android:authorities="${applicationId}.flutter_downloader.provider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/provider_paths"/>
+        </provider>
+
+        <!-- Begin FlutterDownloader customization -->
+        <!-- 禁用默认的 Initializer -->
+        <provider
+                android:name="androidx.startup.InitializationProvider"
+                android:authorities="${applicationId}.androidx-startup"
+                android:exported="false"
+                tools:node="merge">
+            <meta-data
+                    android:name="androidx.work.WorkManagerInitializer"
+                    android:value="androidx.startup"
+                    tools:node="remove"/>
+        </provider>
+
+        <!-- 注册 FlutterDownloader 的初始化器 -->
+        <provider
+                android:name="vn.hunghd.flutterdownloader.FlutterDownloaderInitializer"
+                android:authorities="${applicationId}.flutter-downloader-init"
+                android:exported="false">
+            <meta-data
+                    android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS"
+                    android:value="3"/>
+        </provider>
+        <!-- End FlutterDownloader customization -->
+
         <activity
                 android:name=".MainActivity"
                 android:exported="true"
@@ -31,6 +84,8 @@
         <meta-data
                 android:name="flutterEmbedding"
                 android:value="2"/>
+
+
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
