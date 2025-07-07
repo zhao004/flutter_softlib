@@ -2,6 +2,8 @@
 
 一个基于Flutter开发的软件库应用程序。
 
+![app_example.jpg](assets/images/example/app_example.png)
+
 ## ⚠️ 重要声明
 
 **本项目为开源学习项目。**
