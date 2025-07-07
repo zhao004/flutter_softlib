@@ -87,6 +87,7 @@ flutter build apk --target-platform android-arm64
 本项目基于 [MIT License](LICENSE) 开源协议。
 
 **请合理使用，共同维护开源社区环境！**
+
 [//]: # (# 问题反馈群,有什么问题可以在群里反馈,大家一起交流,一起提升技术)
 
 [//]: # (![qrcode_1751853555740.jpg]&#40;assets/images/example/qrcode_1751853555740.jpg&#41;)
