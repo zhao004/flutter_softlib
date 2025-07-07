@@ -31,11 +31,11 @@
 [√] Network resources
 ```
 
-# 编译教程
-
 ## 视频教程
 
 ### [哔哩哔哩](https://search.bilibili.com/all?keyword=flutter%20%E6%89%93%E5%8C%85)
+
+## 部分步骤
 
 ### 下载 **[Flutter SDK](https://docs.flutter.cn/install/archive)**
 
