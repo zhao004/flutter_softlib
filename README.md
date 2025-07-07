@@ -86,6 +86,6 @@ flutter build apk --release --target-platform android-arm64 --obfuscate --split-
 flutter build apk --target-platform android-arm64
 ```
 
-# 问题反馈群,有什么问题可以在群里反馈,大家一起交流,一起提升技术
+[//]: # (# 问题反馈群,有什么问题可以在群里反馈,大家一起交流,一起提升技术)
 
-![qrcode_1751853555740.jpg](assets/images/example/qrcode_1751853555740.jpg)
+[//]: # (![qrcode_1751853555740.jpg]&#40;assets/images/example/qrcode_1751853555740.jpg&#41;)
