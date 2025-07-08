@@ -90,13 +90,19 @@ class _ReportListWidgetState extends State<ReportListWidget>
                 Icon(
                   Icons.remove_red_eye,
                   size: 16,
-                  color: Colors.black.withAlpha(100),
+                  color:
+                      Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black.withAlpha(130),
                 ),
                 Text(
                   "${report.views ?? 0}",
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.black.withAlpha(130),
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black.withAlpha(130),
                   ),
                 ),
               ],
@@ -106,7 +112,10 @@ class _ReportListWidgetState extends State<ReportListWidget>
               logic.formatDateTime(report.createtime ?? 0),
               style: TextStyle(
                 fontSize: 13,
-                color: Colors.black.withAlpha(130),
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black.withAlpha(130),
               ),
             ),
           ],

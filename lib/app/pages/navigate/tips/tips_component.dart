@@ -32,7 +32,7 @@ class _TipsComponentState extends State<TipsComponent> {
           length: reportCats.length,
           child: Scaffold(
             appBar: AppBar(
-              title: Text('线报'),
+              title: Text('线报', style: TextStyle(fontWeight: FontWeight.w500)),
               bottom: TabBar(
                 tabs:
                     reportCats

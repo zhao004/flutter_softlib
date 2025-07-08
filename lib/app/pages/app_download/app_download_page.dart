@@ -53,7 +53,10 @@ class _AppDownloadPageState extends State<AppDownloadPage> {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color:
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white12
+                    : Theme.of(context).primaryColor.withAlpha(10),
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
@@ -120,13 +123,13 @@ class _AppDownloadPageState extends State<AppDownloadPage> {
                             _getStatusText(dowInfo.status),
                             style: TextStyle(
                               fontSize: 12.0,
+                              fontWeight: FontWeight.w500,
                               color: _getStatusColor(dowInfo.status),
                             ),
                           ),
                         ],
                       ),
                     ),
-
                     // 操作按钮组
                     Row(
                       mainAxisSize: MainAxisSize.min,
@@ -165,18 +168,23 @@ class _AppDownloadPageState extends State<AppDownloadPage> {
                       children: [
                         Text(
                           '${dowInfo.progress ?? 0}%',
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.black.withAlpha(180),
+                          style: Get.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w500,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.grey.shade500
+                                    : Colors.black87,
                           ),
                         ),
                         Text(
                           '${calculateDownloadedSize(dowInfo.appSize ?? '', dowInfo.progress ?? 0)} '
                           '/ ${dowInfo.appSize ?? '未知大小'}',
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.black.withAlpha(180),
+                          style: Get.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.grey.shade500
+                                    : Colors.black87,
                           ),
                         ),
                       ],
@@ -232,7 +240,10 @@ class _AppDownloadPageState extends State<AppDownloadPage> {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color:
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey.shade900
+                    : Colors.black12,
             borderRadius: BorderRadius.circular(16),
           ),
           child: const Icon(
@@ -250,7 +261,10 @@ class _AppDownloadPageState extends State<AppDownloadPage> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withAlpha(10),
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey.shade900
+                      : Colors.black12,
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(Icons.pause, size: 18),
@@ -265,7 +279,10 @@ class _AppDownloadPageState extends State<AppDownloadPage> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withAlpha(10),
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey.shade900
+                      : Colors.black12,
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(Icons.play_arrow, size: 18),
@@ -280,7 +297,10 @@ class _AppDownloadPageState extends State<AppDownloadPage> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withAlpha(10),
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey.shade900
+                      : Colors.black12,
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(Icons.refresh, size: 18, color: Colors.red),
@@ -295,7 +315,10 @@ class _AppDownloadPageState extends State<AppDownloadPage> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withAlpha(10),
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey.shade900
+                      : Colors.black12,
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(Icons.install_mobile, size: 18),
@@ -315,7 +338,10 @@ class _AppDownloadPageState extends State<AppDownloadPage> {
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color:
+              Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey.shade900
+                  : Colors.black12,
           borderRadius: BorderRadius.circular(16),
         ),
         child: const Icon(Icons.close, size: 18),

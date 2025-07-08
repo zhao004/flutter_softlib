@@ -26,7 +26,10 @@ class _HomeComponentState extends State<HomeComponent> {
         title: Column(
           spacing: 5,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text('首页'), buildWord()],
+          children: [
+            Text('首页', style: TextStyle(fontWeight: FontWeight.w500)),
+            buildWord(),
+          ],
         ),
         actionsPadding: const EdgeInsets.only(right: 5),
         actions: [
@@ -57,7 +60,9 @@ class _HomeComponentState extends State<HomeComponent> {
         }
         return Text(
           word,
-          style: TextStyle(fontSize: 13, color: Colors.black87),
+          style: Get.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w300,
+          ),
         );
       },
     );
@@ -158,7 +163,17 @@ class _HomeComponentState extends State<HomeComponent> {
                         ),
                         child: Text(
                           item.title ?? '',
-                          style: TextStyle(color: Colors.white, fontSize: 14),
+                          style: Get.textTheme.titleMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black,
+                                offset: Offset(1, 1),
+                                blurRadius: 1,
+                              ),
+                            ],
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -200,7 +215,10 @@ class _HomeComponentState extends State<HomeComponent> {
               title: Text('官方推荐'),
               titleTextStyle: TextStyle(
                 fontSize: 20,
-                color: Colors.black,
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -262,10 +280,9 @@ class _HomeComponentState extends State<HomeComponent> {
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 15,
+                                      style: Get.textTheme.titleSmall?.copyWith(
                                         color: Colors.white,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w500,
                                         shadows: [
                                           Shadow(
                                             color: Colors.black,

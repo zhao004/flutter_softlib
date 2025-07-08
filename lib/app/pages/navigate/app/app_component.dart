@@ -33,7 +33,7 @@ class _AppComponentState extends State<AppComponent> {
           length: catList.length,
           child: Scaffold(
             appBar: AppBar(
-              title: Text('软件'),
+              title: Text('软件', style: TextStyle(fontWeight: FontWeight.w500)),
               bottom: TabBar(
                 tabs:
                     catList

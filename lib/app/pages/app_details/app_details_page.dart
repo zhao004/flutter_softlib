@@ -127,7 +127,13 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
                 ),
                 child: Text(
                   appInfo.fileSize ?? '未知大小',
-                  style: TextStyle(color: Colors.white, fontSize: 13),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.black
+                            : Colors.white,
+                  ),
                 ),
               ),
               if (appInfo.fileTime != null && appInfo.fileTime!.isNotEmpty)
@@ -139,7 +145,13 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
                   ),
                   child: Text(
                     appInfo.fileTime ?? '未知时间',
-                    style: TextStyle(color: Colors.white, fontSize: 13),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors.black
+                              : Colors.white,
+                    ),
                   ),
                 ),
               Container(
@@ -150,7 +162,13 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
                 ),
                 child: Text(
                   appInfo.fileType ?? '未知类型',
-                  style: TextStyle(color: Colors.white, fontSize: 13),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.black
+                            : Colors.white,
+                  ),
                 ),
               ),
             ],
@@ -171,12 +189,24 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
       child: ListTile(
         minVerticalPadding: 10,
         contentPadding: EdgeInsets.all(0),
-        title: Text('软件介绍', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          '软件介绍',
+          style: Get.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         subtitle: Padding(
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: Text(
             appInfo.fileDesc ?? '',
-            style: TextStyle(color: Colors.grey[800]),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey[500]
+                      : Colors.grey[800],
+            ),
           ),
         ),
       ),
@@ -193,7 +223,12 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
       child: ListTile(
         contentPadding: EdgeInsets.all(0),
-        title: Text('软件截图', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          '软件截图',
+          style: Get.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         subtitle: GestureDetector(
           onTap: () => logic.showPreviewImage(appInfo.fileImage ?? ''),
           child: Card(
@@ -225,7 +260,6 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       decoration: BoxDecoration(
-        color: Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(1),
@@ -260,6 +294,11 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
     return SizedBox(
       height: 50,
       child: FilledButton(
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
         onPressed:
             () => download.addDownload(
               logic.appInfo?.fileName ?? '未知文件名',
@@ -315,10 +354,13 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
             ),
             Text(
               '${downloadTask.progress}%',
-              style: TextStyle(
-                fontSize: 14,
+
+              style: Get.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade700,
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey.shade500
+                        : Colors.black87,
               ),
             ),
           ],
@@ -341,7 +383,13 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
                   ),
                   Text(
                     '${calculateDownloadedSize(logic.appSize, downloadTask.progress)} / ${logic.appSize}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                    style: Get.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors.grey.shade500
+                              : Colors.black87,
+                    ),
                   ),
                 ],
               ),
@@ -371,7 +419,10 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
         return Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.grey.shade100,
+            color:
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey.shade900
+                    : Colors.black12,
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Icon(Icons.hourglass_empty, size: 20),
@@ -383,7 +434,10 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
           child: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey.shade900
+                      : Colors.black12,
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.pause, size: 20),
@@ -396,7 +450,10 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
           child: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey.shade900
+                      : Colors.black12,
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.play_arrow, size: 20),
@@ -409,7 +466,10 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
           child: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey.shade900
+                      : Colors.black12,
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.refresh, size: 20),
@@ -428,7 +488,10 @@ class _AppDetailsPageState extends State<AppDetailsPage> {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color:
+              Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey.shade900
+                  : Colors.black12,
           borderRadius: BorderRadius.circular(8),
         ),
         child: const Icon(Icons.close, size: 20),

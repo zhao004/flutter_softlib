@@ -1,9 +1,20 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 import '../generated/assets.dart';
+
+ThemeMode _currentMode = ThemeMode.system;
+
+bool get isDarkMode {
+  if (_currentMode == ThemeMode.system) {
+    return WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+        Brightness.dark;
+  }
+  return _currentMode == ThemeMode.dark;
+}
 
 /// 键值对数据库
 final SharedPreferencesAsync keyValue = SharedPreferencesAsync();
