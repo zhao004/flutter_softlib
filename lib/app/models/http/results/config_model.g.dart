@@ -10,10 +10,9 @@ ConfigModel _$ConfigModelFromJson(Map<String, dynamic> json) => ConfigModel(
   code: (json['code'] as num?)?.toInt(),
   msg: json['msg'] as String?,
   time: json['time'] as String?,
-  data:
-      json['data'] == null
-          ? null
-          : ConfigData.fromJson(json['data'] as Map<String, dynamic>),
+  data: json['data'] == null
+      ? null
+      : ConfigData.fromJson(json['data'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$ConfigModelToJson(ConfigModel instance) =>

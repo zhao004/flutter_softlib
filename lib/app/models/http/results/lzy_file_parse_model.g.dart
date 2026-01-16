@@ -11,10 +11,9 @@ LzyFileParseModel _$LzyFileParseModelFromJson(Map<String, dynamic> json) =>
       code: (json['code'] as num?)?.toInt(),
       msg: json['msg'] as String?,
       time: json['time'] as String?,
-      data:
-          json['data'] == null
-              ? null
-              : Data.fromJson(json['data'] as Map<String, dynamic>),
+      data: json['data'] == null
+          ? null
+          : Data.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$LzyFileParseModelToJson(LzyFileParseModel instance) =>

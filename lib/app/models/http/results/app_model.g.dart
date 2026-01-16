@@ -10,10 +10,9 @@ AppModel _$AppModelFromJson(Map<String, dynamic> json) => AppModel(
   code: (json['code'] as num?)?.toInt(),
   msg: json['msg'] as String?,
   time: json['time'] as String?,
-  data:
-      (json['data'] as List<dynamic>?)
-          ?.map((e) => AppData.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  data: (json['data'] as List<dynamic>?)
+      ?.map((e) => AppData.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$AppModelToJson(AppModel instance) => <String, dynamic>{

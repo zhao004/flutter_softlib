@@ -167,41 +167,34 @@ class $DownloadTasksTable extends DownloadTasks
   DownloadTask map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return DownloadTask(
-      id:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}id'],
-          )!,
-      appId:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}app_id'],
-          )!,
-      taskId:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}task_id'],
-          )!,
-      appName:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}app_name'],
-          )!,
-      appSize:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}app_size'],
-          )!,
-      appIcon:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.string,
-            data['${effectivePrefix}app_icon'],
-          )!,
-      createTime:
-          attachedDatabase.typeMapping.read(
-            DriftSqlType.dateTime,
-            data['${effectivePrefix}create_time'],
-          )!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      appId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}app_id'],
+      )!,
+      taskId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}task_id'],
+      )!,
+      appName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}app_name'],
+      )!,
+      appSize: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}app_size'],
+      )!,
+      appIcon: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}app_icon'],
+      )!,
+      createTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}create_time'],
+      )!,
     );
   }
 
@@ -307,8 +300,9 @@ class DownloadTask extends DataClass implements Insertable<DownloadTask> {
       appName: data.appName.present ? data.appName.value : this.appName,
       appSize: data.appSize.present ? data.appSize.value : this.appSize,
       appIcon: data.appIcon.present ? data.appIcon.value : this.appIcon,
-      createTime:
-          data.createTime.present ? data.createTime.value : this.createTime,
+      createTime: data.createTime.present
+          ? data.createTime.value
+          : this.createTime,
     );
   }
 
@@ -632,16 +626,12 @@ class $$DownloadTasksTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer:
-              () => $$DownloadTasksTableFilterComposer($db: db, $table: table),
-          createOrderingComposer:
-              () =>
-                  $$DownloadTasksTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer:
-              () => $$DownloadTasksTableAnnotationComposer(
-                $db: db,
-                $table: table,
-              ),
+          createFilteringComposer: () =>
+              $$DownloadTasksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DownloadTasksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DownloadTasksTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
@@ -678,16 +668,9 @@ class $$DownloadTasksTableTableManager
                 appIcon: appIcon,
                 createTime: createTime,
               ),
-          withReferenceMapper:
-              (p0) =>
-                  p0
-                      .map(
-                        (e) => (
-                          e.readTable(table),
-                          BaseReferences(db, table, e),
-                        ),
-                      )
-                      .toList(),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );

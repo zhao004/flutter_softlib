@@ -19,7 +19,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.2
+  sdk: ">=3.10.0 <4.0.0"
+
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -34,57 +35,54 @@ dependencies:
     sdk: flutter
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  dio: ^5.8.0+1
-  get: ^4.7.2
-  logger: ^2.6.0
-  uuid: ^4.5.1
-  retrofit: ^4.4.2
-  json_serializable: ^6.9.5
+  dio: ^5.9.0
+  get: ^4.7.3
+  logger: ^2.6.2
+  uuid: ^4.5.2
+  retrofit: ^4.9.2
+
+  json_serializable: ^6.11.4
   json_annotation: ^4.9.0
-  fluttertoast: ^8.2.12
+  fluttertoast: ^9.0.0
   path_provider: ^2.1.5
-  package_info_plus: ^8.3.0
-  device_info_plus: ^11.5.0
-  shared_preferences: ^2.5.3
-  url_launcher: ^6.3.1
+  package_info_plus: ^9.0.0
+  device_info_plus: ^12.3.0
+  shared_preferences: ^2.5.4
+  url_launcher: ^6.3.2
   carousel_slider: ^5.1.1
   marquee: ^2.3.0
-  permission_handler: ^12.0.0+1
+  permission_handler: ^12.0.1
   qr_flutter: ^4.1.0
   image_gallery_saver_plus: ^4.0.1
   flutter_downloader: ^1.12.0
   easy_refresh: ^3.4.0
   cached_network_image: ^3.4.1
   photo_view: ^0.15.0
-  font_awesome_flutter: ^10.8.0
+  font_awesome_flutter: ^10.12.0
   flutter_keyboard_visibility: ^6.0.0
-  drift: ^2.27.0
-  drift_flutter: ^0.2.4
-  flutter_widget_from_html: ^0.16.0
+  drift: ^2.30.1
+  drift_flutter: ^0.2.8
+  flutter_widget_from_html: ^0.17.1
   flutter_easyloading: ^3.0.5
-  flex_color_scheme: ^8.2.0
+  flex_color_scheme: ^8.4.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
-  talker_dio_logger: ^4.9.0
-  retrofit_generator: ^9.2.0
-  build_runner: ^2.5.3
-  flutter_launcher_icons: ^0.14.3
-  drift_dev: ^2.27.0
+  build_runner: ^2.10.5
+  flutter_lints: ^6.0.0
+  talker_dio_logger: ^5.1.11
+  retrofit_generator: ^10.2.1
+  flutter_launcher_icons: ^0.14.4
+  drift_dev: ^2.30.1
+
 flutter_launcher_icons:
   android: 'ic_launcher'
   image_path: "assets/icon/icon.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -18,16 +18,14 @@
 # Flutter环境
 
 ```textmate
-[√] Flutter (Channel stable, 3.32.5, on Microsoft Windows [版本 10.0.19045.5965], locale zh-CN)
-[√] Windows Version (10 专业版 64 位, 22H2, 2009)
-[√] Android toolchain - develop for Android devices (Android SDK version 36.0.0)
-[√] Chrome - develop for the web
-[√] Visual Studio - develop Windows apps (Visual Studio Community 2022 17.14.0)
+[√] Flutter (Channel stable, 3.38.7, on Microsoft Windows [版本 10.0.26200.7623], locale zh-CN)
+[√] Windows Version (Windows 11 or higher, 25H2, 2009)
+[√] Android toolchain - develop for Android devices (Android SDK version 36.1.0)
 [√] Android Studio (version 2024.3.2)
-[√] IntelliJ IDEA Ultimate Edition (version 2025.1)
 [√] Connected device (3 available)
 [√] Network resources
 ```
+
 
 ## 视频教程
 
@@ -69,18 +67,22 @@
 
 ### 配置后台地址
 
-当前项目下终端执行：`dart run build_runner build`
+当前项目下终端执行：`dart run build_runner build --delete-conflicting-outputs`
+
 
 ![config_backstage.png](assets/images/example/config_backstage.png)
 
 ## 编译指令 编译arm64架构的apk(这个架构支持大部分安卓手机,不支持模拟器)
 
 ```shell
+# 本地快速验证
+flutter build apk --debug
 # 混淆打包
 flutter build apk --release --target-platform android-arm64 --obfuscate --split-debug-info=./build_info
 # 正常打包
 flutter build apk --target-platform android-arm64
 ```
+
 
 ## 许可证
 
