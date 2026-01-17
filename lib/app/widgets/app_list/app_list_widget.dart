@@ -85,20 +85,18 @@ class _AppListWidgetState extends State<AppListWidget>
           Text(
             appInfo.size ?? '未知大小',
             style: TextStyle(
-              color:
-                  Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey[300]
-                      : Colors.grey[600],
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[300]
+                  : Colors.grey[600],
               fontWeight: FontWeight.w500,
             ),
           ),
           Text(
             appInfo.time ?? '未知时间',
             style: TextStyle(
-              color:
-                  Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey[300]
-                      : Colors.grey[600],
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[300]
+                  : Colors.grey[600],
               fontWeight: FontWeight.w500,
             ),
           ),

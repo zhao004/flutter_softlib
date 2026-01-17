@@ -35,20 +35,43 @@ class _ReportListWidgetState extends State<ReportListWidget>
       builder: (logic) {
         List<ReportData>? reports = logic.reports;
         if (logic.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(strokeWidth: 3),
+          );
         }
         if (reports == null || reports.isEmpty) {
-          return const Center(child: Text('暂无数据'));
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.article_outlined,
+                  size: 64,
+                  color: Theme.of(context).disabledColor.withAlpha(100),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '暂无相关报告',
+                  style: TextStyle(
+                    color: Theme.of(context).disabledColor,
+                    fontSize: 15,
+                  ),
+                ),
+              ],
+            ),
+          );
         }
         return EasyRefresh(
           onLoad: logic.loadNextPage,
           onRefresh: logic.reload,
           controller: logic.easyRefreshController,
-          child: ListView.builder(
+          child: ListView.separated(
+            padding: const EdgeInsets.all(16),
             itemCount: reports.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (_, index) {
               ReportData report = reports[index];
-              return _buildItem(report);
+              return _buildItem(context, report);
             },
           ),
         );
@@ -57,68 +80,116 @@ class _ReportListWidgetState extends State<ReportListWidget>
   }
 
   /// 构建列表元素
-  Widget _buildItem(ReportData report) {
-    return ListTile(
-      onTap: () => logic.goToReadPage(report),
-      visualDensity: const VisualDensity(vertical: 3),
-      leading: CachedNetworkImage(
-        imageUrl: report.image ?? '',
-        width: 130,
-        fit: BoxFit.cover,
-        placeholder:
-            (context, url) =>
-                Image.asset(Assets.imagesSucceed, fit: BoxFit.cover),
-        errorWidget:
-            (context, url, error) =>
-                Image.asset(Assets.imagesSucceed, fit: BoxFit.cover),
+  Widget _buildItem(BuildContext context, ReportData report) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final secondaryTextColor = isDark ? Colors.white60 : Colors.black45;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(isDark ? 30 : 10),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      title: Text(
-        report.title ?? '无标题',
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-      subtitle: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-        child: Row(
-          spacing: 10,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              spacing: 3,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => logic.goToReadPage(report),
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.remove_red_eye,
-                  size: 16,
-                  color:
-                      Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black.withAlpha(130),
+                // 封面图
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: CachedNetworkImage(
+                    imageUrl: report.image ?? '',
+                    width: 110,
+                    height: 80,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: theme.dividerColor.withAlpha(20),
+                      child: const Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      Assets.imagesSucceed,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-                Text(
-                  "${report.views ?? 0}",
-                  style: TextStyle(
-                    fontSize: 13,
-                    color:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black.withAlpha(130),
+                const SizedBox(width: 12),
+                // 内容区
+                Expanded(
+                  child: SizedBox(
+                    height: 80,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // 标题
+                        Text(
+                          report.title ?? '无标题',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            height: 1.3,
+                          ),
+                        ),
+                        // 底部信息
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // 浏览量
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.visibility_outlined,
+                                  size: 14,
+                                  color: secondaryTextColor,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "${report.views ?? 0}",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: secondaryTextColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // 时间
+                            Text(
+                              logic.formatDateTime(report.createtime ?? 0),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: secondaryTextColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
-            // 发布时间
-            Text(
-              logic.formatDateTime(report.createtime ?? 0),
-              style: TextStyle(
-                fontSize: 13,
-                color:
-                    Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black.withAlpha(130),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

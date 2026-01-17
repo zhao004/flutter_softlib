@@ -85,15 +85,14 @@ class NavigateLogic extends GetxController {
     showDialog(
       context: Get.context!,
       barrierDismissible: !forcedUpdate,
-      builder:
-          (context) => _buildUpdateDialog(
-            context,
-            title,
-            versionName,
-            content,
-            downloadUrl,
-            forcedUpdate,
-          ),
+      builder: (context) => _buildUpdateDialog(
+        context,
+        title,
+        versionName,
+        content,
+        downloadUrl,
+        forcedUpdate,
+      ),
     );
   }
 
@@ -329,8 +328,8 @@ class NavigateLogic extends GetxController {
   ) {
     return Expanded(
       child: ElevatedButton(
-        onPressed:
-            () => _handleUpdateButtonTap(context, downloadUrl, forcedUpdate),
+        onPressed: () =>
+            _handleUpdateButtonTap(context, downloadUrl, forcedUpdate),
         style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(Get.context!).primaryColor,
           foregroundColor: Colors.white,

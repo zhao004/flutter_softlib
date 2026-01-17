@@ -6,117 +6,116 @@ import 'package:flutter_softlib/app/routes/app_pages.dart';
 import 'package:flutter_softlib/app/utils/toast_util.dart';
 import 'package:get/get.dart';
 
+enum _FetchType { initial, refresh, loadMore }
+
 class AppListLogic extends GetxController {
-  String? url;
+  final String? url;
 
   AppListLogic({required this.url});
 
-  HttpApi httpApi = Get.find<HttpApi>();
-  bool isLoading = true;
-  List<LzyDirParseData>? appList;
-  int page = 1;
-
-  EasyRefreshController easyRefreshController = EasyRefreshController(
+  final HttpApi _httpApi = Get.find<HttpApi>();
+  final EasyRefreshController easyRefreshController = EasyRefreshController(
     controlFinishLoad: true,
     controlFinishRefresh: true,
   );
 
+  bool isLoading = true;
+  List<LzyDirParseData> appList = [];
+  int _page = 1;
+  static const int _pageSize = 15;
+
   @override
   void onReady() {
-    // TODO: implement onReady
     super.onReady();
     loadInitial();
   }
 
-  /// 初始加载（通常用于骨架屏）
   void loadInitial() {
-    page = 1;
-    _loadData();
+    _page = 1;
+    isLoading = true;
+    update(['apps']);
+    _fetchData(_FetchType.initial);
   }
 
-  /// 下拉刷新（第一页）
-  void reload() {
-    page = 1;
-    _loadData(isRefresh: true);
+  Future<void> reload() async {
+    _page = 1;
+    await _fetchData(_FetchType.refresh);
   }
 
-  /// 上拉加载下一页
-  void loadNextPage() {
-    page++;
-    _loadData(isLoadMore: true);
+  Future<void> loadNextPage() async {
+    _page++;
+    await _fetchData(_FetchType.loadMore);
   }
 
-  /// 通用加载逻辑（内部私有）
-  void _loadData({bool isRefresh = false, bool isLoadMore = false}) async {
+  Future<void> _fetchData(_FetchType type) async {
     try {
-      // 修复：使用正确的页码
-      final result = await httpApi.getLzyDirParse(url: url, pgs: page);
-
-      if (isLoading) {
-        isLoading = false;
-        if (result.code == 1) {
-          appList = result.data ?? [];
-          // 如果初始数据小于15条，禁用上拉加载
-          if ((appList?.length ?? 0) < 15) {
-            easyRefreshController.finishLoad(IndicatorResult.noMore);
-          }
-        } else {
-          appList = [];
-        }
-        update(['apps']);
-        return;
-      }
+      final result = await _httpApi.getLzyDirParse(url: url, pgs: _page);
 
       if (result.code == 1) {
-        List<LzyDirParseData> newData = result.data ?? [];
-        if (isLoadMore) {
-          if (newData.isEmpty) {
-            easyRefreshController.finishLoad(IndicatorResult.noMore);
-          } else {
-            appList?.addAll(newData);
-            easyRefreshController.finishLoad(IndicatorResult.success);
-          }
+        final newData = result.data ?? [];
+        if (type == _FetchType.loadMore) {
+          appList.addAll(newData);
         } else {
           appList = newData;
-          easyRefreshController.finishRefresh(IndicatorResult.success);
         }
+        final hasNoMore = newData.length < _pageSize;
+        _finishTask(type, IndicatorResult.success, hasNoMore: hasNoMore);
       } else if (result.code == 2) {
-        if (isLoadMore) {
-          page--; // 回退页码
-          easyRefreshController.finishLoad(IndicatorResult.noMore);
+        if (type == _FetchType.loadMore) {
+          _rollbackPageIfLoadMore(type);
         } else {
           appList = [];
-          easyRefreshController.finishRefresh(IndicatorResult.success);
         }
+        _finishTask(type, IndicatorResult.noMore, hasNoMore: true);
         if (result.msg?.isNotEmpty == true) {
           ToastUtil.error(result.msg!);
         }
       } else {
-        if (isLoadMore) page--; // 回退页码
-        _handleError(result.msg ?? '未知错误', isLoadMore);
+        _rollbackPageIfLoadMore(type);
+        _finishTask(type, IndicatorResult.fail, error: result.msg ?? '未知错误');
       }
     } catch (e) {
       logger.e(e.toString());
-      if (isLoadMore) page--; // 回退页码
-      if (!isLoading) {
-        _handleError('请求失败：${e.toString()}', isLoadMore);
-      }
+      _rollbackPageIfLoadMore(type);
+      _finishTask(type, IndicatorResult.fail, error: '请求失败：${e.toString()}');
     } finally {
+      isLoading = false;
       update(['apps']);
     }
   }
 
-  /// 错误统一处理
-  void _handleError(String message, bool isLoadMore) {
-    if (isLoadMore) {
-      easyRefreshController.finishLoad(IndicatorResult.fail);
-    } else {
-      easyRefreshController.finishRefresh(IndicatorResult.fail);
+  void _rollbackPageIfLoadMore(_FetchType type) {
+    if (type == _FetchType.loadMore) {
+      _page = (_page - 1).clamp(1, _page);
     }
-    ToastUtil.error(message);
   }
 
-  ///跳转到描述页面
+  void _finishTask(
+    _FetchType type,
+    IndicatorResult result, {
+    bool hasNoMore = false,
+    String? error,
+  }) {
+    if (type == _FetchType.refresh || type == _FetchType.initial) {
+      easyRefreshController.finishRefresh(result);
+      if (result == IndicatorResult.success ||
+          result == IndicatorResult.noMore) {
+        easyRefreshController.resetFooter();
+        if (hasNoMore) {
+          easyRefreshController.finishLoad(IndicatorResult.noMore);
+        }
+      }
+    } else {
+      easyRefreshController.finishLoad(
+        hasNoMore ? IndicatorResult.noMore : result,
+      );
+    }
+
+    if (error != null && type != _FetchType.initial) {
+      ToastUtil.error(error);
+    }
+  }
+
   void goToView(LzyDirParseData appInfo) {
     String dowUrl = appInfo.down ?? '';
     String? appId = appInfo.id;
