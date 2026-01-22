@@ -1,11 +1,5 @@
 # Flutter SoftLib
 
-## **[软件库后端开源地址](https://gitee.com/zhao004/softlib)**
-
-一个基于Flutter开发的软件库应用程序。
-
-![app_example.jpg](assets/images/example/app_example.png)
-
 ## ⚠️ 重要声明
 
 **本项目为开源学习项目。**
@@ -15,7 +9,13 @@
 - 📝 **免责声明**：开发者不对使用本项目造成的任何后果承担责任
 - 🔒 **合规使用**：使用者需确保遵守当地法律法规
 
-# Flutter环境
+## **[软件库后端开源地址](https://gitee.com/zhao004/softlib)**
+
+一个基于Flutter开发的软件库应用程序。
+
+![app_example.jpg](assets/images/example/app_example.png)
+
+## Flutter环境
 
 ```textmate
 [√] Flutter (Channel stable, 3.38.7, on Microsoft Windows [版本 10.0.26200.7623], locale zh-CN)
@@ -25,7 +25,6 @@
 [√] Connected device (3 available)
 [√] Network resources
 ```
-
 
 ## 视频教程
 
@@ -69,7 +68,6 @@
 
 当前项目下终端执行：`dart run build_runner build --delete-conflicting-outputs`
 
-
 ![config_backstage.png](assets/images/example/config_backstage.png)
 
 ## 编译方式
@@ -104,7 +102,6 @@ flutter build apk --release --target-platform android-arm64 --obfuscate --split-
 # 正常打包
 flutter build apk --target-platform android-arm64
 ```
-
 
 ## 许可证
 
