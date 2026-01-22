@@ -72,6 +72,28 @@
 
 ![config_backstage.png](assets/images/example/config_backstage.png)
 
+## 编译方式
+
+本项目提供两种编译方式，推荐使用脚本编译以减少手动配置步骤。
+
+### 方式一：build.bat脚本编译（推荐）
+
+脚本包含完整流程：环境检测、软件名称/版本/包名配置、后台地址、图标生成、签名配置、编译输出。
+
+运行方式：
+
+```bat
+:: 方式1：双击 build.bat
+
+:: 方式2：命令行运行
+cd /d D:\project\flutter_softlib
+build.bat
+```
+
+### 方式二：手动配置编译
+
+按需手动修改配置后，执行下面的编译命令。
+
 ## 编译指令 编译arm64架构的apk(这个架构支持大部分安卓手机,不支持模拟器)
 
 ```shell
