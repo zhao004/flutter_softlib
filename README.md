@@ -9,7 +9,7 @@
 - 📝 **免责声明**：开发者不对使用本项目造成的任何后果承担责任
 - 🔒 **合规使用**：使用者需确保遵守当地法律法规
 
-## **[软件库后端开源地址](https://gitee.com/zhao004/softlib)**
+## **[软件库后端开源地址](https://github.com/zhao004/php_softlib_fastadminplugs)**
 
 一个基于Flutter开发的软件库应用程序。
 
