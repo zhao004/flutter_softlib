@@ -35,21 +35,21 @@ dependencies:
     sdk: flutter
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  dio: ^5.9.0
+  dio: ^5.9.2
   get: ^4.7.3
   logger: ^2.6.2
-  uuid: ^4.5.2
+  uuid: ^4.5.3
   retrofit: ^4.9.2
 
-  json_serializable: ^6.11.4
-  json_annotation: ^4.9.0
+  json_serializable: ^6.13.0
+  json_annotation: ^4.11.0
   fluttertoast: ^9.0.0
   path_provider: ^2.1.5
   package_info_plus: ^9.0.0
   device_info_plus: ^12.3.0
   shared_preferences: ^2.5.4
   url_launcher: ^6.3.2
-  carousel_slider: ^5.1.1
+  carousel_slider: ^5.1.2
   marquee: ^2.3.0
   permission_handler: ^12.0.1
   qr_flutter: ^4.1.0
@@ -58,10 +58,10 @@ dependencies:
   easy_refresh: ^3.4.0
   cached_network_image: ^3.4.1
   photo_view: ^0.15.0
-  font_awesome_flutter: ^10.12.0
+  font_awesome_flutter: ^11.0.0
   flutter_keyboard_visibility: ^6.0.0
-  drift: ^2.30.1
-  drift_flutter: ^0.2.8
+  drift: ^2.32.0
+  drift_flutter: ^0.3.0
   flutter_widget_from_html: ^0.17.1
   flutter_easyloading: ^3.0.5
   flex_color_scheme: ^8.4.0
@@ -70,12 +70,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.10.5
+  build_runner: ^2.12.2
   flutter_lints: ^6.0.0
-  talker_dio_logger: ^5.1.11
-  retrofit_generator: ^10.2.1
+  talker_dio_logger: ^5.1.15
+  retrofit_generator: ^10.2.3
   flutter_launcher_icons: ^0.14.4
-  drift_dev: ^2.30.1
+  drift_dev: ^2.32.0
 
 flutter_launcher_icons:
   android: 'ic_launcher'
